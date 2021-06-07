@@ -40,7 +40,12 @@ while True:
         os.system('cls')
         if ai_start == False:
             UI(start_state)
-            a = int(input())
+            while True:
+                try:
+                    a = int(input())
+                    break
+                except:
+                    print("Invalid input")
             state,player_side = take_action(start_state,is_stealing,a,0)
         else:
             state = start_state
@@ -62,7 +67,12 @@ while True:
             else:
                 #os.system('cls')
                 UI(state)
-                a = int(input())
+                while True:
+                    try:
+                        a = int(input())
+                        break
+                    except:
+                        print("Invalid input")
                 state,player_side = take_action(start_state,is_stealing,a,player_side)
                 a = None
     elif inp == '3':
