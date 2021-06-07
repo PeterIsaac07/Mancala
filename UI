@@ -17,3 +17,4 @@ def UI(state_vector):
                                                                                                        string_vector[
                                                                                                            5]) + "\x1b[0;30;47m"+" " + "\x1b[0;30;44m" + "[ {} ]".format(
         string_vector[6]) + "\33[0m")
+    print()
