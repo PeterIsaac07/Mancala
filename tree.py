@@ -13,20 +13,21 @@ class TreeNode():
         self.is_cutoff_start = False
 
         self.is_maximizer = True
-        self.alpha = - np.inf
-        self.beta = np.inf
+        self.alpha = - 9999999
+        self.beta = 99999999
 
     def eval_func(self,current_state,mankla_to_front_fact = 0.7):
         state = self.state
         lamda = state[13]/(state[6]+1)
         p1_mankala = state[6] - current_state[6]
         p2_mankala = state[13] - current_state[13]
-        p1_infront_beads = state[0] + state[1] + state[2] + state[3] +  state[4] + state[5] + state[6] 
+        p1_infront_beads = state[0] + state[1] + state[2] + state[3] +  state[4] + state[5] + state[6]
         p2_infront_beads = state[7] + state[8] + state[9] + state[10] + state[11] + state[12] + state[13]
         p1_score = mankla_to_front_fact * p1_mankala + (1-mankla_to_front_fact) * p1_infront_beads
         p2_score = mankla_to_front_fact * p2_mankala + (1-mankla_to_front_fact) * p2_infront_beads
 
         self.score = p1_score - lamda*p2_score
+        return self.score
 
     def add_child(self,Node):
         self.Nodes.append(Node)
@@ -54,12 +55,56 @@ def generate_search_tree(current_state,max_depth,player_side,is_stealing,last_de
     root.branching_factor = len(root.Nodes)
     return root
 
+def alpha_beta(node,alpha = -999999,beta = 9999999):
+    node.alpha = alpha
+    node.beta = beta
+    for child in node.Nodes :
+        if len(child.Nodes) == 0 : #if leaf
+            v = child.eval_func(node.state)
+            child.is_evaluated = True
+            if node.is_maximizer == True:
+                if v > node.alpha :
+                    node.alpha = v
+            else:
+                if v < node.beta :
+                    node.beta = v
+            if node.alpha >= node.beta :
+                node.is_cutoff_start = True
+                if node.is_maximizer == True:
+                    return node.alpha
+                else:
+                    return node.beta
+
+        else : # if not leaf
+            v = alpha_beta(child,node.alpha,node.beta)
+            child.is_evaluated = True
+            if node.is_maximizer == True:
+                if v > node.alpha:
+                    node.alpha = v
+            else:
+                if v < node.beta:
+                    node.beta = v
+            if node.alpha >= node.beta:
+                node.is_cutoff_start = True
+                if node.is_maximizer == True:
+                    return node.alpha
+                else:
+                    return node.beta
+
+        if node.is_maximizer == True:
+            return node.alpha
+        else:
+            return node.beta
+
+
+
+
 start_state = [4]*14
 start_state[6] = 0
 start_state[13] = 0
 
 tree = generate_search_tree(start_state,3,0,1)
 
+v = alpha_beta(tree)
 
-
-
+print(v)
