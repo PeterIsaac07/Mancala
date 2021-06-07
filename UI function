@@ -5,7 +5,7 @@ def UI(state_vector):
             string_vector[i] = " " + str(state_vector[i])
         else:
             string_vector[i] = str(state_vector[i])
-    print("\x1b[0;30;41m" + "[ {} ]".format(string_vector[13]) + "\x1b[0;30;47m"+" "+"\x1b[0;30;41m" + "({})\u2080 ({})\u2081 ({})\u2082 ({})\u2083 ({})\u2084 ({})\u2085".format(
+    print("\x1b[0;30;41m" + "[ {} ]".format(string_vector[13]) + "\x1b[0;30;47m"+" "+"\x1b[0;30;41m" + "({})\u2085 ({})\u2084 ({})\u2083 ({})\u2082 ({})\u2081 ({})\u2080".format(
         string_vector[12], string_vector[11], string_vector[10], string_vector[9], string_vector[8],
         string_vector[7]) + "\x1b[0;30;47m" + "       "+"\33[0m")
     print("\x1b[0;30;47m"+"                                                 "+"\33[0m")
