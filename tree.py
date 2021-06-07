@@ -1,10 +1,10 @@
-import numpy as np
 from take_action import take_action
 
 class TreeNode():
 
     def __init__(self,state,depth):
         self.Nodes = []
+        self.idx = None
         self.state = state
         self.score = None
         self.depth = depth
@@ -51,7 +51,9 @@ def generate_search_tree(current_state,max_depth,player_side,is_stealing,last_de
                 continue
         state = current_state.copy()
         new_state,side = take_action(state,is_stealing,i,player_side)
-        root.add_child(generate_search_tree(new_state,max_depth-1,side,is_stealing,last_depth+1,top_state,top_side))
+        new_node = generate_search_tree(new_state,max_depth-1,side,is_stealing,last_depth+1,top_state,top_side)
+        new_node.idx = i
+        root.add_child(new_node)
     root.branching_factor = len(root.Nodes)
     return root
 
@@ -107,4 +109,3 @@ tree = generate_search_tree(start_state,3,0,1)
 
 v = alpha_beta(tree)
 
-print(v)
