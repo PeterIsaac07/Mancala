@@ -1,24 +1,57 @@
 def take_action(current_state_vec, is_stealing ,action, player_side):
     if(player_side==0):                                                                  #player 1 (blue)
+        s=0
         for i in range(1, current_state_vec[action] + 1):
-            if ((action+i)%14==13):  continue
-            current_state_vec[(action+i)%14] += 1
-        if((action + current_state_vec[action])%14==6):
-            next_turn=0
+            if ((action + i) % 14 == 13):   s+=1
+
+        for i in range(1, current_state_vec[action] + 1 + s):
+            if ((action + i) % 14 != 13):   current_state_vec[(action+i)%14] += 1
+
+        old_current_state_vec = current_state_vec[action]
+        current_state_vec[action] = int(current_state_vec[action] / 13)
+
+        if ((action + old_current_state_vec) % 14 == 6):
+            next_turn = 0
         else:
-            next_turn=1
-        current_state_vec[action] = int(current_state_vec[action]/13)
+            next_turn = 1
+
+        if(is_stealing):
+            if(((action + old_current_state_vec)%14 in range (0,6)) and (current_state_vec[(action + old_current_state_vec)%14]==1) and (current_state_vec[12-((action + old_current_state_vec)%14)]>0)):
+                print("TMAM 2")
+                current_state_vec[(action + old_current_state_vec)%14]=0
+                current_state_vec[6]+=(current_state_vec[12-((action + old_current_state_vec)%14)]+1)
+                current_state_vec[12-((action + old_current_state_vec)%14)]=0
+            else:   pass
+        else:   pass
+
 
     elif(player_side==1):                                                                 #player 2 (red)
         action+=7                                                                         #to map between state vector index and slot number
+        s=0
         for i in range(1, current_state_vec[action] + 1):
-            if ((action+i)%14==6):   continue
-            current_state_vec[(action+i)%14] += 1
-        if ((action + current_state_vec[action]) % 14 == 13):
+            if ((action + i) % 14 == 6):   s+=1
+
+        for i in range(1, current_state_vec[action] + 1 + s):
+            if ((action + i) % 14 != 6):    current_state_vec[(action + i) % 14] += 1
+            else:   s+=1
+
+
+        old_current_state_vec = current_state_vec[action]
+        current_state_vec[action] = int(current_state_vec[action] / 13)
+
+        if ((action + old_current_state_vec) % 14 == 13):
             next_turn = 1
         else:
             next_turn = 0
-        current_state_vec[action] = int(current_state_vec[action]/13)
+
+        if (is_stealing):
+            if (((action + old_current_state_vec)%14 in range (7,13)) and (current_state_vec[(action + old_current_state_vec) % 14] == 1) and (current_state_vec[12-((action + old_current_state_vec)%14)]>0)):
+                print("TMAM4")
+                current_state_vec[(action + old_current_state_vec) % 14] = 0
+                current_state_vec[13] += (current_state_vec[12 - ((action + old_current_state_vec) % 14)] + 1)
+                current_state_vec[12 - ((action + old_current_state_vec) % 14)] = 0
+            else:   pass
+        else:   pass
 
     else:
         raise Exception("wrong player_side")
