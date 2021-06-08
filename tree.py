@@ -41,6 +41,10 @@ def generate_search_tree(current_state,max_depth,player_side,is_stealing,last_de
     root.is_maximizer = top_side==player_side
     if max_depth == 0:
         root.eval_func(top_state)
+        if root.is_maximizer:
+            root.alpha = root.score
+        else:
+            root.beta = root.score
         return root
     for i in range(0,6):
         if player_side == 1:
@@ -55,6 +59,12 @@ def generate_search_tree(current_state,max_depth,player_side,is_stealing,last_de
         new_node.idx = i
         root.add_child(new_node)
     root.branching_factor = len(root.Nodes)
+    if(root.branching_factor==0):
+        root.eval_func(top_state)
+        if root.is_maximizer:
+            root.alpha = root.score
+        else:
+            root.beta = root.score
     return root
 
 def alpha_beta(node,alpha = -999999,beta = 9999999):
@@ -62,7 +72,8 @@ def alpha_beta(node,alpha = -999999,beta = 9999999):
     node.beta = beta
     for child in node.Nodes :
         if len(child.Nodes) == 0 : #if leaf
-            v = child.eval_func(node.state)
+            #v = child.eval_func(node.state)
+            v = child.score
             child.is_evaluated = True
             if node.is_maximizer == True:
                 if v > node.alpha :
