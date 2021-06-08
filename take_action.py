@@ -3,7 +3,7 @@ def take_action(current_state_vec, is_stealing ,action, player_side):
         raise Exception("is_stealing must be 0 or 1")
 
     if (action not in range(0,6)):
-        raise Exception("action must be in range of 0 to 5")
+        return current_state_vec,player_side
 
     if(player_side==0):
         if(current_state_vec[action]==0):
@@ -72,12 +72,14 @@ def take_action(current_state_vec, is_stealing ,action, player_side):
         current_state_vec[9] = 0
         current_state_vec[8] = 0
         current_state_vec[7] = 0
+        """
         if(current_state_vec[6]>current_state_vec[13]):
             print("Player 1 wins! (Blue)")
         elif(current_state_vec[6]<current_state_vec[13]):
             print("Player 2 wins! (Red)")
         elif(current_state_vec[6]==current_state_vec[13]):
             print("It's a Draw!")
+        """
 
     elif(current_state_vec[7]==0 and current_state_vec[8]==0 and current_state_vec[9]==0 and current_state_vec[10]==0 and current_state_vec[11]==0 and current_state_vec[12]==0):
         current_state_vec[6] += (current_state_vec[0] + current_state_vec[1] + current_state_vec[2] + current_state_vec[3] +current_state_vec[4] + current_state_vec[5])
@@ -87,11 +89,13 @@ def take_action(current_state_vec, is_stealing ,action, player_side):
         current_state_vec[3] = 0
         current_state_vec[4] = 0
         current_state_vec[5] = 0
+        """
         if (current_state_vec[6] > current_state_vec[13]):
             print("Player 1 wins! (Blue)")
         elif (current_state_vec[6] < current_state_vec[13]):
             print("Player 2 wins! (Red)")
         elif (current_state_vec[6] == current_state_vec[13]):
             print("It's a Draw!")
+        """
 
     return current_state_vec,next_turn
