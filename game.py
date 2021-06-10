@@ -22,7 +22,7 @@ start_state = [4]*14
 start_state[6] = 0
 start_state[13] = 0
 
-difficulty = 7
+difficulty = 5
 is_stealing= 1
 
 while True:
@@ -87,7 +87,7 @@ while True:
             if player_side == ai_side:
                 #os.system('cls')
                 UI(state)
-                t = tree.generate_search_tree(state,difficulty,ai_side,is_stealing)
+                t = tree.generate_search_tree(state,difficulty,ai_side,is_stealing,difficulty)
                 alpha = tree.alpha_beta(t)
                 for node in t.Nodes:
                     if ((node.is_maximizer and (node.alpha==alpha)) or (not(node.is_maximizer) and (node.beta==alpha))):
