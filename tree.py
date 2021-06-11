@@ -82,43 +82,50 @@ def generate_search_tree(current_state,max_depth,player_side,is_stealing,difficu
             root.beta = root.score
     return root
 
-def alpha_beta(node,alpha = -999999,beta = 9999999):
+def alpha_beta(node):
+
     for child in node.Nodes :
         if len(child.Nodes) == 0 : #if leaf
             v = child.score
-            child.is_evaluated = True
-            if node.is_maximizer == True:
+            if node.is_maximizer:
                 if v > node.alpha :
                     node.alpha = v
             else:
                 if v < node.beta :
                     node.beta = v
             if node.alpha >= node.beta :
+                child.is_evaluated = True
                 node.is_cutoff_start = True
-                if node.is_maximizer == True:
+                if node.is_maximizer:
+                    node.score = node.alpha  # exp
                     return node.alpha
                 else:
+                    node.score = node.beta  # exp
                     return node.beta
 
         else : # if not leaf
-            v = alpha_beta(child,node.alpha,node.beta)
-            child.is_evaluated = True
-            if node.is_maximizer == True:
+            child.alpha = node.alpha
+            child.beta = node.beta
+            v = alpha_beta(child)
+            node.score = v #exp
+            if node.is_maximizer:
                 if v > node.alpha:
                     node.alpha = v
             else:
                 if v < node.beta:
                     node.beta = v
             if node.alpha >= node.beta:
+                child.is_evaluated = True
                 node.is_cutoff_start = True
-                if node.is_maximizer == True:
+                if node.is_maximizer:
                     return node.alpha
                 else:
                     return node.beta
-
-    if node.is_maximizer == True:
+    if node.is_maximizer:
+        node.score = node.alpha #exp
         return node.alpha
     else:
+        node.score = node.beta #exp
         return node.beta
 
 
