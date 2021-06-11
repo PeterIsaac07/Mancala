@@ -2,9 +2,11 @@ import os
 import tree
 import time
 from UI import UI
+import pickle
+
 from take_action import take_action
 
-def take_next_input():
+def take_next_input(state=None,is_stealing=None,difficulty=None,verbose_mode=None,turn_no=None):
     while True: 
         try:
             a = input()
@@ -13,7 +15,12 @@ def take_next_input():
         except:
             if(a.upper() == 'S'):
                 #save func
-                continue
+                saving=[state,is_stealing,difficulty,verbose_mode,turn_no] ############################
+                out=open("saved","wb")
+                pickle.dump(saving,out)
+                out.close()
+
+                exit() ###############
             elif (a.upper() == 'E'):
                 os.system('cls')
                 return a
@@ -92,10 +99,12 @@ def reset_state():
 difficulty = 8
 is_stealing= 1
 verbose_mode = False
+#load_flag=False
 
 while True:
-    reset_state()
     filename = None
+
+    reset_state()
     os.system('cls')
     print("Mancala\tv0.4")
     print("Start game:")
@@ -135,7 +144,7 @@ while True:
             state = start_state
             player_side = ai_side
         while True:
-            turn_no+=1
+
             #Win-Lose condition , check if game ended
             if((int(state[13])+int(state[6])) == 48):
                 UI(state)
@@ -171,14 +180,18 @@ while True:
                 print('AI chooses ',a)
                 UI(state)
                 filename = print_verbose(verbose_mode,t,round(time_diff,3),turn_no,filename)
+                turn_no += 1
             #Hooman playing
             else:
                 #os.system('cls')
                 print("Your turn")
-                a = take_next_input()
+                a = take_next_input(state,is_stealing,difficulty,verbose_mode,turn_no) ####################
+
+
                 if(a=='E' or a == 'e'):
                     break
-                state,player_side = take_action(start_state,is_stealing,a,player_side)
+                state,player_side = take_action(state,is_stealing,a,player_side) #############################state
+                turn_no += 1
                 UI(state)
                 a = None
     elif inp == '3':
@@ -229,8 +242,70 @@ while True:
         else:
             continue
     elif inp.upper() == 'L':
+        file=open("saved","rb") ###########################3
+        input_list=pickle.load(file)
+        file.close()
+        state=input_list[0]
+        is_stealing=input_list[1]
+        difficulty=input_list[2]
+        verbose_mode=input_list[3]
+        turn_no=input_list[4]
+        player_side=0
+        ai_side=1
+        #load_flag=True
+        UI(state)
         os.system('cls')
-        pass
+        while True:
+
+            #Win-Lose condition , check if game ended
+            if((int(state[13])+int(state[6])) == 48):
+                UI(state)
+                print('Game finished!')
+                diff = int(state[13]) - int(state[6])
+                if(diff>0):
+                    print("AI (Red) wins by "+str(abs(diff))+" points!")
+                elif(diff<0):
+                    print("Player (Blue) wins by "+str(abs(diff))+" points!")
+                else:
+                    print("Tie!")
+                print('Back to main menu?')
+                print('Y - Yes')
+                print('E - Exit')
+                inp = input()
+                if (inp.upper()=='E'):
+                    exit()
+                else:
+                    break
+            #AI playing
+            if player_side == ai_side:
+                T1 = time.time_ns()
+                #os.system('cls')
+                t = tree.generate_search_tree(state,difficulty,ai_side,is_stealing,difficulty)
+                alpha = tree.alpha_beta(t)
+                for node in t.Nodes:
+                    if ((node.is_maximizer and (node.alpha==alpha)) or (not(node.is_maximizer) and (node.beta==alpha))):
+                        a = node.idx
+                        break
+                T2 = time.time_ns()
+                time_diff = (T2 - T1)*10**-6
+                state,player_side = take_action(start_state,is_stealing,a,ai_side)
+                print('AI chooses ',a)
+                UI(state)
+                filename = print_verbose(verbose_mode,t,round(time_diff,3),turn_no,filename)
+                turn_no += 1
+            #Hooman playing
+            else:
+                #os.system('cls')
+                print("Your turn")
+                a = take_next_input(state,is_stealing,difficulty,verbose_mode) ####################
+
+
+                if(a=='E' or a == 'e'):
+                    break
+                state,player_side = take_action(state,is_stealing,a,player_side) #############################state
+                turn_no += 1
+                UI(state)
+                a = None
     elif inp.upper() == 'E':
         break
     else:
