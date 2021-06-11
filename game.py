@@ -3,7 +3,7 @@ import tree
 import time
 from UI import UI
 import pickle
-
+import socket
 from take_action import take_action
 
 def take_next_input(state=None,is_stealing=None,difficulty=None,verbose_mode=None,turn_no=None):
@@ -39,6 +39,9 @@ def traverse(root,nodes_dict_list):
         for i in range(root.branching_factor):
             traverse(root.Nodes[i],nodes_dict_list)
 
+
+
+
 def print_verbose(is_verbose_on,tree,time_diff,turn_no,filename):
     if is_verbose_on:
         if filename is None:
@@ -72,9 +75,7 @@ def print_verbose(is_verbose_on,tree,time_diff,turn_no,filename):
         print('Max depth in Tree = ' , max_depth)
         print('Average Branching Factor = ' ,round(average_branching_factor,3))
         print('Number of explored leaf nodes = ',num_leafs)
-        
         file = open(filename,'a')
-        
         file.write('\n')
         file.write("Turn "+str(turn_no)+' :\n')
         file.write('-----\n')
@@ -100,10 +101,9 @@ difficulty = 8
 is_stealing= 1
 verbose_mode = False
 #load_flag=False
-
+ai_side = 1
 while True:
     filename = None
-
     reset_state()
     os.system('cls')
     print("Mancala\tv0.4")
@@ -116,7 +116,49 @@ while True:
     print("E - Exit")
     inp = input()
     if inp == '1':
-        pass
+        #############################################################################
+        # Create a TCP/IP socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Bind the socket to the port
+        server_address = ('localhost', 5000)
+        print('starting up on {} port {}'.format(*server_address))
+        sock.bind(server_address)
+        # Listen for incoming connections
+        sock.listen(1)
+        # Wait for a connection
+        print('waiting for a connection')
+        connection, client_address = sock.accept()
+        print('connection from', client_address)
+        #############################################################################
+        state = start_state
+        print("it is your turn")
+        UI(state)
+        while True:
+            if ((int(state[13]) + int(state[6])) == 48):
+                UI(state)
+                print('Game finished!')
+                diff = int(state[13]) - int(state[6])
+                if (diff > 0):
+                    print("You win " + str(abs(diff)) + " points!")
+                elif (diff < 0):
+                    print("your opponent wins " + str(abs(diff)) + " points!")
+                else:
+                    print("Tie!")
+            player_side = 0
+            action = int(input("Please enter which slot you want to play: "))
+            state, next_turn = take_action(state, is_stealing, action, player_side)
+            UI(state)
+            connection.sendall((str(action)).encode())
+            if next_turn == 0:
+                continue
+            elif next_turn == 1:
+                while next_turn == 1:
+                    player_side = 1
+                    action = connection.recv(1)
+                    action = action.decode()
+                    state, next_turn = take_action(state, is_stealing, int(action), player_side)
+                    UI(state)
+
     elif inp =='2': # Player vs AI
         turn_no = 0
         os.system('cls')
@@ -195,7 +237,65 @@ while True:
                 UI(state)
                 a = None
     elif inp == '3':
-        pass
+        #############################################################################
+        # Create a TCP/IP socket
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Bind the socket to the port
+        server_address = ('localhost', 5000)
+        print('starting up on {} port {}'.format(*server_address))
+        sock.bind(server_address)
+        # Listen for incoming connections
+        sock.listen(1)
+        # Wait for a connection
+        print('waiting for a connection')
+        connection, client_address = sock.accept()
+        print('connection from', client_address)
+        #############################################################################
+        UI(start_state)
+        state = start_state
+        player_side = ai_side
+        #############################################################################
+        while True:
+            #Win-Lose condition , check if game ended
+            if((int(state[13])+int(state[6])) == 48):
+                UI(state)
+                print('Game finished!')
+                diff = int(state[13]) - int(state[6])
+                if(diff>0):
+                    print("OUR AI wins by "+str(abs(diff))+" points!")
+                elif(diff<0):
+                    print("OPPONENT AI wins by "+str(abs(diff))+" points!")
+                else:
+                    print("Tie!")
+                break
+            # OUR AI playing
+            if player_side == ai_side:
+                T1 = time.time_ns()
+                # os.system('cls')
+                t = tree.generate_search_tree(state, difficulty, ai_side, is_stealing, difficulty)
+                alpha = tree.alpha_beta(t)
+                for node in t.Nodes:
+                    if ((node.is_maximizer and (node.alpha == alpha)) or (
+                            not (node.is_maximizer) and (node.beta == alpha))):
+                        a = node.idx
+                        break
+                T2 = time.time_ns()
+                time_diff = (T2 - T1) * 10 ** -6
+                state, player_side = take_action(state, is_stealing, a, ai_side)
+                print('OUR AI chooses ', a)
+                connection.sendall((str(a)).encode())
+                UI(state)
+            if player_side == 0:
+                a=connection.recv(1)
+                a= a.decode()
+                a = int(a)
+                print('Opponent  AI chooses ', a)
+                state, player_side = take_action(state, is_stealing, a, 0)
+                UI(state)
+
+
+
+
     elif inp.upper() == 'O':
         os.system('cls')
         difficulty_names = {}
