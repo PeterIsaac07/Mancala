@@ -4,7 +4,7 @@ import time
 from UI import UI
 import pickle
 import socket
-
+import sys
 from take_action import take_action
 
 def take_next_input(state=None,is_stealing=None,difficulty=None,verbose_mode=None,turn_no=None):
@@ -21,7 +21,7 @@ def take_next_input(state=None,is_stealing=None,difficulty=None,verbose_mode=Non
                 pickle.dump(saving,out)
                 out.close()
 
-                exit() ###############
+                sys.exit() ###############
             elif (a.upper() == 'E'):
                 os.system('cls')
                 return a
@@ -206,7 +206,7 @@ while True:
                 print('E - Exit')
                 inp = input()
                 if (inp.upper()=='E'):
-                    exit()
+                    sys.exit()
                 else:
                     break
             #AI playing
@@ -277,7 +277,7 @@ while True:
                 print('E - Exit')
                 inp = input()
                 if (inp.upper() == 'E'):
-                    quit()
+                    sys.exit()
                 else:
                     break
             if player_side == 0:
@@ -387,7 +387,7 @@ while True:
                 print('E - Exit')
                 inp = input()
                 if (inp.upper()=='E'):
-                    exit()
+                    sys.exit()
                 else:
                     break
             #AI playing
