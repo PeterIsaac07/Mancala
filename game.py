@@ -24,6 +24,7 @@ def take_next_input(state=None,is_stealing=None,difficulty=None,verbose_mode=Non
                 out.close()
                 print("saving...")
                 time.sleep(2)
+                print("Saving Done.")
                 sys.exit() ###############
             elif (a.upper() == 'E'):
                 os.system('cls')
@@ -246,8 +247,6 @@ while True:
                 #os.system('cls')
                 print("Your turn")
                 a = take_next_input(state,is_stealing,difficulty,verbose_mode,turn_no) ####################
-
-
                 if(a=='E' or a == 'e'):
                     break
                 state,player_side = take_action(state,is_stealing,a,player_side) #############################state
