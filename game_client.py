@@ -272,7 +272,6 @@ while True:
                     print("OPPONENT AI wins by " + str(abs(diff)) + " points!")
                 else:
                     print("Tie!")
-                break
                 print('Back to main menu?')
                 print('Y - Yes')
                 print('E - Exit')
