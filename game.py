@@ -334,7 +334,7 @@ while True:
                 i+=1
             inp = input()
             try:
-                assert(int(inp)<=5)
+                assert(int(inp)<=10)
                 assert(int(inp)>0)
                 i = int(inp)
                 difficulty = i
