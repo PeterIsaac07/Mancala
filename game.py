@@ -75,6 +75,7 @@ def print_verbose(is_verbose_on,tree,time_diff,turn_no,filename):
         print('Max depth in Tree = ' , max_depth)
         print('Average Branching Factor = ' ,round(average_branching_factor,3))
         print('Number of explored leaf nodes = ',num_leafs)
+
         file = open(filename,'a')
         file.write('\n')
         file.write("Turn "+str(turn_no)+' :\n')
@@ -84,9 +85,14 @@ def print_verbose(is_verbose_on,tree,time_diff,turn_no,filename):
             file.write('   '+str(leaf[0])+' :: '+str(round(leaf[1],3))+'\n')
         print('Number of cutoffs = ',num_cutoffs)
         if num_cutoffs>0:
-            print('#Cuttoff :: Level')
+            temp = '#Cuttoff :: Level'
+            file.write(temp + "\n")
+
             for cut in nodes_cutoff:
-                print('   ',cut[0],' :: ',cut[1])
+                #print('   ',cut[0],' :: ',cut[1])
+                temp = '   '+str(cut[0])+' :: '+str(cut[1])
+                file.write(temp+"\n")
+
         print('---------------------------')
         return filename
 

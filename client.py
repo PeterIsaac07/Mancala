@@ -1,7 +1,6 @@
 import socket
 import sys
 import _pickle as cPickle
-
 from UI import UI
 from take_action import take_action
 current_state_vec=[4,4,4,4,4,4,0,4,4,4,4,4,4,0]
