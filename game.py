@@ -269,8 +269,11 @@ while True:
         UI(start_state)
         state = start_state
         player_side = ai_side
+        turn_no = 0
+
         #############################################################################
         while True:
+            turn_no +=1
             #Win-Lose condition , check if game ended
             if((int(state[13])+int(state[6])) == 48):
                 UI(state)
@@ -305,6 +308,7 @@ while True:
                 time_diff = (T2 - T1) * 10 ** -6
                 state, player_side = take_action(state, is_stealing, a, ai_side)
                 print('OUR AI chooses ', a)
+                filename = print_verbose(verbose_mode,t,round(time_diff,3),turn_no,filename)
                 connection.sendall((str(a)).encode())
                 UI(state)
             if player_side == 0:
