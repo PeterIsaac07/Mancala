@@ -19,8 +19,9 @@ def take_next_input(state=None,is_stealing=None,difficulty=None,verbose_mode=Non
                 out=open("saved","wb")
                 pickle.dump(saving,out)
                 out.close()
-
-                exit() ###############
+                print("saving...")
+                time.sleep(2)
+                quit() ###############
             elif (a.upper() == 'E'):
                 os.system('cls')
                 return a
@@ -209,7 +210,7 @@ while True:
                 print('E - Exit')
                 inp = input()
                 if (inp.upper()=='E'):
-                    exit()
+                    quit()
                 else:
                     break
             #AI playing
@@ -379,7 +380,7 @@ while True:
                 print('E - Exit')
                 inp = input()
                 if (inp.upper()=='E'):
-                    exit()
+                    quit()
                 else:
                     break
             #AI playing
