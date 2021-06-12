@@ -151,6 +151,14 @@ while True:
                     print("your opponent wins " + str(abs(diff)) + " points!")
                 else:
                     print("Tie!")
+                print('Back to main menu?')
+                print('Y - Yes')
+                print('E - Exit')
+                inp = input()
+                if (inp.upper() == 'E'):
+                    quit()
+                else:
+                    break
             player_side = 0
             action = int(input("Please enter which slot you want to play: "))
             state, next_turn = take_action(state, is_stealing, action, player_side)
@@ -274,7 +282,14 @@ while True:
                     print("OPPONENT AI wins by "+str(abs(diff))+" points!")
                 else:
                     print("Tie!")
-                break
+                print('Back to main menu?')
+                print('Y - Yes')
+                print('E - Exit')
+                inp = input()
+                if (inp.upper() == 'E'):
+                    quit()
+                else:
+                    break
             # OUR AI playing
             if player_side == ai_side:
                 T1 = time.time_ns()
@@ -361,7 +376,7 @@ while True:
         ai_side=1
         #load_flag=True
         UI(state)
-        os.system('cls')
+        #os.system('cls')
         while True:
 
             #Win-Lose condition , check if game ended
