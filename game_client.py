@@ -8,7 +8,7 @@ import socket
 from take_action import take_action
 
 def take_next_input(state=None,is_stealing=None,difficulty=None,verbose_mode=None,turn_no=None):
-    while True: 
+    while True:
         try:
             a = input()
             a = int(a)
@@ -73,9 +73,9 @@ def print_verbose(is_verbose_on,tree,time_diff,turn_no,filename):
         print('Max depth in Tree = ' , max_depth)
         print('Average Branching Factor = ' ,round(average_branching_factor,3))
         print('Number of explored leaf nodes = ',num_leafs)
-        
+
         file = open(filename,'a')
-        
+
         file.write('\n')
         file.write("Turn "+str(turn_no)+' :\n')
         file.write('-----\n')
@@ -122,9 +122,17 @@ while True:
         # Connect the socket to the port where the server is listening
         server_address = ('localhost', 5000)
         print('connecting to {} port {}'.format(*server_address))
-        sock.connect(server_address)
+        connection_Status = -1
+        while True :
+            try:
+                connection_Status = sock.connect(server_address)
+                break
+            except:
+                continue
         ############################################################################
         state = start_state
+        print("connection established")
+
         print("it is your opponent turn")
         UI(state)
 
@@ -238,14 +246,22 @@ while True:
         # Connect the socket to the port where the server is listening
         server_address = ('localhost', 5000)
         print('connecting to {} port {}'.format(*server_address))
-        sock.connect(server_address)
+
+        while True :
+            try:
+                connection_Status = sock.connect(server_address)
+                break
+            except:
+                continue
         ############################################################################
         UI(start_state)
         state = start_state
         player_side = 0
         ai_side =1
+        turn_no = 0
         while True:
             # Win-Lose condition , check if game ended
+            turn_no +=1
             if ((int(state[13]) + int(state[6])) == 48):
                 UI(state)
                 print('Game finished!')
@@ -257,6 +273,14 @@ while True:
                 else:
                     print("Tie!")
                 break
+                print('Back to main menu?')
+                print('Y - Yes')
+                print('E - Exit')
+                inp = input()
+                if (inp.upper() == 'E'):
+                    quit()
+                else:
+                    break
             if player_side == 0:
                 opponent_Choice = sock.recv(1)
                 a = opponent_Choice.decode()
@@ -277,6 +301,7 @@ while True:
                 T2 = time.time_ns()
                 time_diff = (T2 - T1) * 10 ** -6
                 state, player_side = take_action(state, is_stealing, a, ai_side)
+                filename = print_verbose(verbose_mode,t,round(time_diff,3),turn_no,filename)
                 print('OUR AI chooses ', a)
                 UI(state)
                 sock.sendall((str(a)).encode())
