@@ -97,7 +97,7 @@ def reset_state():
     start_state[13] = 0
 
 #Default_options
-difficulty = 8
+difficulty = 5
 is_stealing= 1
 verbose_mode = False
 #load_flag=False
